@@ -1,0 +1,208 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src * data: gap: content: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+    <script src="components/loader.js"></script>
+    <link rel="stylesheet" href="components/loader.css">
+    <link rel="stylesheet" href="css/notation_fretboard.css">
+</head>
+
+<body>
+    <div id="app">
+        <div id="container" v-bind:style="containerStyle">
+            <div id="life-wrap">
+                <div id="life-frame">
+                    <div id="life-bar" v-bind:style="{ width: lifeWidth + '%'}"></div>
+                    <div id="life-light"></div>
+                </div>
+            </div>
+            <div id="giveup-wrap">
+                <img id="flag" src="./imgs/flag.png" width="30" height="30"  v-show="isRunning" v-on:click="giveupModalShow = true">
+            </div>
+            <div id="points-wrap">
+                <div id="score">{{ score }} point</div>
+            </div>
+            <div id="question-wrap">
+                <div id="notation">
+                    <ul>
+                        <template v-for="i in 9">
+                            <li class="noteLine" v-if="3 <= i && i <= 7"></li>
+                            <li class="noteLine subLine" v-else></li>
+                        </template>
+                    </ul>
+                    <div id="cref">
+                        <img id="gCref" src="./imgs/gCref.png" width="30" height="100">
+                    </div>
+                    <ul id="notes-wrap">
+                        <template>
+                            <li class="note-wrap" v-for="item in notes" v-bind:key="item.refId"
+                                v-bind:style="item.wrapStyle" v-bind:ref="item.refId">
+                                <div class="sign" v-bind:style="item.signStyle"> {{ item.sign }} </div>
+                                <div class="note" v-bind:style="item.noteStyle"></div>
+                                <div class="oct-sign" v-bind:style="item.signStyle"> {{ item.octSign }} </div>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+            </div>
+            <div id="answer-wrap">
+                <div id="finger-board">
+                    <ul id="fret-wrap">
+                        <template v-for="i in 12">
+                            <li class="fret single-mark" v-if="[3,5,7,9].includes(i-1)"></li>
+                            <li class="fret" v-else></li>
+                        </template>
+                    </ul>
+                    <ul id="string-wrap">
+                        <li class="string" v-for="i in 6" v-bind:style="{ borderColor: stringColor[i] }"></li>
+                    </ul>
+                    <ul id="touch-wrap">
+                        <li v-for="i in 72" 
+                            v-bind:class="touchStyle[i]"
+                            v-on:click="touchPosition($event)"
+                            v-bind:data-touch-string="Math.floor((i-1) / 12 + 1)"
+                            v-bind:data-touch-fret="(i-1) % 12"
+                            v-bind:data-touch-Pitch="openPitch[ Math.floor((i-1) / 12 + 1) ] + ((i-1) % 12)"
+                            v-bind:data-touch-sound="openSound[ Math.floor((i-1) / 12 + 1) ] + ((i-1) % 12)">
+                        </li>
+                    </ul>
+                    <ul id="fret-num-wrap">
+                        <li class="fret-num" v-for="i in 12">{{ i-1 }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <ul id="effects-wrap">
+            <li class="touch-effect" v-for="item in touchEffects" v-bind:key="item.refId" v-bind:style="item.styles">
+            </li>
+        </ul>
+        <ul id="grade-wrap">
+            <li class="grade" v-bind:class="item.gradeClassName" v-for="item in grades" v-bind:key="item.refId"
+                v-bind:style="item.styles"> {{ item.gradeName }}
+            </li>
+        </ul>
+        <transition name="combo-scale">
+            <div id="combo" v-if="combo.show"> {{ combo.cnt }} Combo! </div>
+        </transition>
+        <transition name="count-down-Disappear">
+            <div id="count-down" v-if="countDown.show"> {{ countDown.msg }} </div>
+        </transition>
+        <transition name="modal-open">
+            <div id="giveup-modal" v-show="giveupModalShow">
+                <div id="giveup-modal-container">
+                    <div id="giveup-title">Give Up?</div>
+                    <div id="giveup-buttons">
+                        <div class="btn" v-on:click="endGame()">≫ Yes</div>
+                        <div class="btn" v-on:click="giveupModalShow = false">≫ No</div>
+                    </div>
+                </div>
+            </div>
+        </transition>
+        <transition name="modal-open">
+            <div id="result-modal" v-show="resultModalShow">
+                <div id="result-modal-container">
+                    <div id="result-title">Result</div>
+                    <div id="result-score">
+                        <div class="result-label">Total Score</div>
+                        <div class="result-point"> {{ score }}</div>
+                    </div>
+                    <div id="result-combo">
+                        <div class="result-label">Max Combo</div>
+                        <div class="result-point"> {{ maxCombo }}</div>
+                    </div>
+                    <div id="result-perfect">
+                        <div class="result-label">Perfect</div>
+                        <div class="result-point"> {{ cntPerfect }}</div>
+                    </div>
+                    <div id="result-great">
+                        <div class="result-label">Great</div>
+                        <div class="result-point"> {{ cntGreat }}</div>
+                    </div>
+                    <div id="result-good">
+                        <div class="result-label">Good</div>
+                        <div class="result-point"> {{ cntGood }}</div>
+                    </div>
+                    <div id="result-ok">
+                        <div class="result-label">Ok</div>
+                        <div class="result-point"> {{ cntOk }}</div>
+                    </div>
+                    <div id="result-miss">
+                        <div class="result-label">Miss</div>
+                        <div class="result-point"> {{ cntMiss }}</div>
+                    </div>
+                    <div id="result-buttons">
+                        <div class="btn" v-on:click="startGame()">≫ Retry</div>
+                        <div class="btn" v-on:click="settingModalShow = true">≫ Settings</div>
+                    </div>
+                </div>
+            </div>
+        </transition>
+        <transition name="modal-open">
+            <div id="setting-modal" v-show="settingModalShow">
+                <div id="setting-modal-container">
+                    <div id="setting-title">Settings</div>
+                    <div id="setting-game-speed">
+                        <div>Game Speed</div>
+                        <div class="setting-group">
+                            <input type="radio" id="game-speed-slow" value="7000" v-model="gameSpeed">
+                            <label for="game-speed-slow">Slow</label>
+                            <input type="radio" id="game-speed-normal" value="4000" v-model="gameSpeed">
+                            <label for="game-speed-normal">Normal</label>
+                            <input type="radio" id="game-speed-fast" value="2000" v-model="gameSpeed">
+                            <label for="game-speed-fast">Fast</label><br>
+                        </div>
+                    </div>
+                    <div id="setting-use-strings">
+                        <div>Strings</div>
+                        <div class="setting-group">
+                            <input type="checkbox" id="string1" value="1" v-model.number="useStrings" checked="checked">
+                            <label for="string1">1st</label>
+                            <input type="checkbox" id="string2" value="2" v-model.number="useStrings" checked="checked">
+                            <label for="string2">2nd</label>
+                            <input type="checkbox" id="string3" value="3" v-model.number="useStrings" checked="checked">
+                            <label for="string3">3rd</label>
+                            <input type="checkbox" id="string4" value="4" v-model.number="useStrings" checked="checked">
+                            <label for="string4">4th</label>
+                            <input type="checkbox" id="string5" value="5" v-model.number="useStrings" checked="checked">
+                            <label for="string5">5th</label>
+                            <input type="checkbox" id="string6" value="6" v-model.number="useStrings" checked="checked">
+                            <label for="string6">6th</label>
+                        </div>
+                    </div>
+                    <div id="setting-use-frets">
+                        <div>Frets</div>
+                        <div class="setting-group">
+                            <div>From</div>
+                            <div class="select-wrap">
+                                <select v-model.number="fromFret">
+                                    <option v-for="i in 12">{{ i - 1 }}</option>
+                                </select>
+                            </div>
+                            <div>To</div>
+                            <div class="select-wrap">
+                                <select v-model.number="toFret">
+                                    <option v-for="i in 12">{{ i - 1 }}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="setting-buttons">
+                        <div class="btn" v-on:click="startGame()">≫ Start</div>
+                        <div id="exit-btn" class="btn" v-on:click="backToTop">≫ Exit</div>
+                    </div>
+                </div>
+            </div>
+        </transition>
+        <transition name="loader">
+            <div id="loading" v-show="loaderShow" style="color: white; font-size: 30px; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(10, 0, 30, 0.6); text-align:center; vertical-align: middle; line-height: 100vh;">Loading...</div>
+        </transition>
+    </div>
+    <script src="./script/vue.min.js"></script>
+    <script src="./script/notation_fretboard.js"></script>
+</body>
+
+</html>

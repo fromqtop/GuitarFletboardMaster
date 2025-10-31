@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src * data: gap: content: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+    <script src="components/loader.js"></script>
+    <link rel="stylesheet" href="components/loader.css">
+    <link rel="stylesheet" href="css/swiper.min.css">
+    <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+    <div id="container">
+        <h1 id="title">Main Menu</h1>
+        <!-- Swiper START -->
+        <div class="swiper-container">
+            <!-- メイン表示部分 -->
+            <div class="swiper-wrapper">
+                <!-- 各スライド -->
+                <div class="swiper-slide">
+                    <h2>Music Score & Piano</h2>
+                    <div id="notation-keyboard-img" class="game-img"></div>
+                    <div class="btn" onclick="pushPlayBtn('notation_keyboard')">≫ PLAY</div>
+                </div>
+                <div class="swiper-slide">
+                    <h2>Note Name & Fretboard</h2>
+                    <div id="notename-fretboard-img" class="game-img"></div>
+                    <div class="btn" onclick="pushPlayBtn('notename_fretboard')">≫ PLAY</div>
+                </div>
+                <div class="swiper-slide">
+                    <h2>Music Score & Fretboard</h2>
+                    <div id="notation-fretboard-img" class="game-img"></div>
+                    <div class="btn" onclick="pushPlayBtn('notation_fretboard')">≫ PLAY</div>
+                </div>
+                <div class="swiper-slide">
+                    <h2>Training</h2>
+                    <div id="training-img" class="game-img"></div>
+                    <div class="btn" onclick="pushPlayBtn('training')">≫ PLAY</div>
+                </div>
+                <div class="swiper-slide">
+                    <h2>Free Play</h2>
+                    <div id="freeplay-img" class="game-img"></div>
+                    <div class="btn" onclick="pushPlayBtn('freeplay')">≫ PLAY</div>
+                </div>
+            </div>
+            <div class="swiper-button-prev" onclick="pushSwipeBtn()"></div>
+            <div class="swiper-button-next" onclick="pushSwipeBtn()"></div>
+            <div class="swiper-pagination"  onclick="pushSwipeBtn()"></div>
+        </div>
+        <!-- Swiper END -->
+        <div id="links">
+            <div class="btn"><a href="https://web-breeze.net/guitar-fretboard-master-how-to-play/">≫ How to Play</a></div>
+            <div class="btn"><a href="https://web-breeze.net/guitar-fretboard-master-privacy-policy/">≫ Privacy Policy</a></div>
+        </div>
+    </div>
+    <script src="./script/vue.min.js"></script>
+    <script src="./script/swiper.min.js"></script>
+    <script src="./script/index.js"></script>
+    
+</body>
+
+</html>

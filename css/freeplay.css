@@ -1,0 +1,342 @@
+/* A Modern CSS Reset */
+*,*::before,*::after{box-sizing:border-box}ul[class],ol[class]{padding:0}body,h1,h2,h3,h4,p,ul[class],ol[class],figure,blockquote,dl,dd{margin:0}body{min-height:100vh;scroll-behavior:smooth;text-rendering:optimizeSpeed;line-height:1.5}ul[class],ol[class]{list-style:none}a:not([class]){text-decoration-skip-ink:auto}img{max-width:100%;display:block}article>*+*{margin-top:1em}input,button,textarea,select{font:inherit}@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}}
+li{list-style:none;margin:0;padding:0;}ul{margin:0;padding:0;}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('../font/Roboto-Regular.ttf') format("truetype");
+}
+
+* {
+  font-family: 'roboto';
+  user-select: none;
+}
+
+html,body {
+    overflow: hidden;
+}
+
+body {
+    background-image: url("../imgs/game_bg_img.jpg");
+    background-size: cover;
+    background-position: center;
+}
+
+
+#container {
+    display: grid;
+    margin: 0 auto;
+    width: 90%;
+    height: calc(100vh - 20px);
+    max-width: calc(50px * 22);
+    grid-template:
+    "margin1"   1fr
+    "back"      60px
+    "selects"   130px
+    "margin2"   1fr
+    "modebtn"   40px
+    "answer"    220px
+    "margin3"   10px
+    / 100%;
+    align-items: center;
+}
+
+#back-btn {
+    grid-area: back;
+}
+
+#controls {
+    grid-area: selects;
+    color: white;
+}
+
+.select-boxes {
+    display: flex;
+}
+
+#main-scale-select,#layer-scale-select {
+    margin-bottom: 1em;
+}
+
+#change-mode-btn {
+    color: black;
+    grid-area: modebtn;
+    width: 90px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background-color: white;
+    box-shadow: 3px 3px 0 0 gray;
+}
+
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: rgba(0, 5, 20, 0.8);
+    border: 1px solid white;
+    border-radius: 0;
+    color: white;
+    padding-left: 5px;
+    position: relative;
+    width: 100%;
+}
+.select-wrap {
+    display: inline-block;
+    position: relative;
+}
+.select-wrap::before {
+    content: '';
+    border-style: solid;
+    border-width: 7px 5px 0 5px;
+    border-color: white transparent transparent transparent;
+    top: 11px;
+    right: 8px;
+    position: absolute;
+    pointer-events: none;
+}
+
+.root-select > select {
+    width: 50px;
+}
+.scale-select > select {
+    width: 100%;
+}
+
+/* 回答エリア */
+#answer-wrap {
+    grid-area: answer;
+    margin: 0 auto;
+    width: 100%;
+    max-width:1100px;
+    height: calc(30px * 6 + 30px + 10px);
+    position: relative;
+    overflow-x: auto;
+    overflow-y: hidden;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+#fret-wrap {
+    margin-top: 5px;
+    position: absolute;
+    display: flex;
+    background-color: rgba(10, 0, 30, 0.6);
+}
+
+.fret {
+    width:50px;
+    height: calc(30px * 6 - 10px);
+    border-left: solid silver 2px;
+}
+
+.fret:first-child {
+    border-right: solid 10px ivory;
+    border-left: none;
+}
+
+.single-mark {
+    background-image: radial-gradient(circle ,white 7%, transparent 8%);
+}
+
+.double-mark {
+    background-image: radial-gradient(circle ,white 7%, transparent 8%),radial-gradient(circle ,white 7%, transparent 8%);
+    background-position: 0 -45px, 0 45px;
+}
+
+#string-wrap {
+    margin-top: 5px;
+    position: absolute;
+}
+
+.string {
+    width: calc(50px * 22);
+    height: 30px;
+    border-bottom: solid 1px white;
+}
+
+.string:first-child {
+    height: 10px;
+}
+
+#touch-wrap {
+    position: absolute;
+    display: flex;
+    flex-wrap: wrap;
+    width: calc(50px * 22);
+    color: white;
+}
+
+.touch {
+    width: 50px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+}
+
+.show-main > span,.show-layer > span {
+    font-size:13px;
+    font-weight: bold;
+    color: #1d1d1d;
+    letter-spacing: -0.1em;
+}
+
+.touch.show-main {
+    background-image: radial-gradient(circle, rgba(235, 235, 240, 0.9) 40%, steelblue 42%, transparent 50% );
+}
+
+.touch.show-layer {
+    background-image: radial-gradient(circle, rgba(255, 243, 195, 0.7) 40%,transparent 45% );
+}
+
+.touch.show-main.show-layer {
+    background-image: radial-gradient(circle, rgba(235, 235, 240, 0.9) 40%, steelblue 42%, orange 50%, transparent 53% );
+} 
+
+.touch.root {
+    background-image: radial-gradient(circle, rgba(255, 214, 214, 0.9) 40%, red 42%, transparent 50% );
+}
+
+.touch.root.show-layer {
+    background-image: radial-gradient(circle, rgba(255, 214, 214, 0.9) 40%, red 42%, orange 50%, transparent 53% );
+}
+
+#fret-num-wrap {
+    position: absolute;
+    display: flex;
+    margin-top: calc(30px * 6);
+}
+
+.fret-num {
+    width: 50px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    color: white;
+}
+
+
+#effects-wrap {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.touch-effect {
+    position: fixed;
+    width:20px;
+    height:20px;
+    border-radius: 50%;
+    pointer-events: none;
+    animation-name: touchEffect;
+    animation-duration: 150ms;
+}
+
+@keyframes touchEffect {
+	0% {
+        background :  rgba(0, 255, 255, 0);
+		box-shadow: 0 0 8px 6px rgba(0, 255, 242, 0),
+			0 0 0px 0px rgba(255, 255, 255, 1),
+			0 0 0px 0px rgba(0, 255, 242, 0);
+	}
+	10% {
+        background :  rgba(0, 255, 255, 1);
+		box-shadow: 0 0 20px 6px rgba(0, 255, 242, 1),
+			0 0 0 5px rgba(255, 255, 255, 1),
+            0 0 5px 30px rgba(0, 255, 242, 1);
+	}
+	100% {
+        background : rgba(0, 255, 255, 0);
+		box-shadow: 0 0 8px 6px rgba(0, 255, 242, 0),
+			0 0 10px 50px rgba(255, 255, 255, 0),
+			0 0 10px 40px rgba(0, 255, 242, 0);
+    }
+}
+
+/* スクロールバーのスタイリング */
+::-webkit-scrollbar {
+    height: 7px;
+}
+::-webkit-scrollbar-track {
+    border-radius: 5px;
+	background:rgba(0, 0, 0, 0.5);
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+	background:rgb(0, 200, 200);
+}
+
+#exit-modal {
+    position: fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    background-color: rgba(0, 5, 20, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+#exit-modal-container {
+    margin: 0 auto;
+    width: 90%;
+    max-width: 500px;
+    height: calc(100vh - 20px);
+    max-width: 800px;
+    font-size: 20px;
+    color: white;
+    display: grid;
+    grid-template:
+    "title"     120px
+    "btns"      1fr
+    /1fr;
+    align-items: center;
+}
+
+#exit-title {
+    font-size:35px;
+    text-shadow: 0 0 0.3em rgba(255, 255, 255, 1);
+    grid-area: title;
+}
+
+#exit-buttons {
+    display: flex;
+    grid-area: btns;
+    justify-content: space-around;
+}
+
+.btn {
+    border: solid white 1px;
+    background-color: rgba(0, 20, 40, 0.8);
+    width: 120px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    box-shadow:
+        0 0 5px white,
+        0 0 10px white;
+        font-size: 15px;
+}
+
+.modal-open-enter-active {
+    transition: all .15s ;
+}
+.modal-open-leave-active {
+    transition: all 0.6s;
+}
+.modal-open-enter {
+    transform: translateY( -100% );
+}
+.modal-open-enter-to {
+    transform: translateY( 0 );
+}
+.modal-open-leave-to {
+    transform: scale( 10 );
+    opacity: 0;
+}
+
+.loader-leave-active { transition: all 1s; }
+.loader-leave-to { opacity: 0 }

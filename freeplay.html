@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src * data: gap: content: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+    <script src="components/loader.js"></script>
+    <link rel="stylesheet" href="components/loader.css">
+    <link rel="stylesheet" href="css/freeplay.css">
+</head>
+
+<body>
+    <div id="app">
+        <div id="container">
+            <div id="back-btn">
+                <img id="back" src="./imgs/back.png" width="30" height="30" v-on:click="exitModalShow = true">
+            </div>  
+            <div id="controls">  
+                <div id="main-scale-select">
+                    <div>Main Scale</div>
+                    <div class="select-boxes">
+                        <div class="select-wrap root-select">
+                            <select v-model.number="selectedRoot">
+                                <option v-for="item in roots" v-bind:value="item.value">
+                                {{ item.text }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="select-wrap scale-select">
+                            <select v-model.number="selectedScale">
+                                <optgroup v-for="group in scaleList" v-bind:label="group.label">
+                                    <option v-for="scale in group.scaleDatas" v-bind:value="scale.scaleId">{{ scale.scaleName }}</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div id="layer-scale-select">
+                    <div>Layer Scale</div>
+                    <div class="select-boxes">
+                        <div class="select-wrap root-select">
+                            <select v-model.number="selectedLayerRoot">
+                                <option v-for="item in roots" v-bind:value="item.value">
+                                {{ item.text }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="select-wrap scale-select">
+                            <select v-model.number="selectedLayerScale">
+                                <optgroup v-for="group in scaleList" v-bind:label="group.label">
+                                    <option v-for="scale in group.scaleDatas" v-bind:value="scale.scaleId">{{ scale.scaleName }}</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="change-mode-btn" v-on:click="changeMode">{{ changeModeBtnLabel }}</div>
+            <div id="answer-wrap">
+                <div id="finger-board">
+                    <ul id="fret-wrap">
+                        <template v-for="i in 22">
+                            <li class="fret double-mark" v-if="(i-1) === 12"></li>
+                            <li class="fret single-mark" v-else-if="[3,5,7,9,15,17,19,21].includes(i-1)"></li>
+                            <li class="fret" v-else></li>
+                        </template>
+                    </ul>
+                    <ul id="string-wrap">
+                        <li class="string" v-for="i in 6"></li>
+                    </ul>
+                    <ul id="touch-wrap">
+                        <li v-for="i in 132" 
+                            class="touch"
+                            v-bind:class="showMode !== 'hide' && positionMsg[i] ? positionMsg[i].styles : '' "
+                            v-on:click="touchPosition($event)"
+                            v-bind:data-touch-string="Math.floor((i-1) / 22 + 1)"
+                            v-bind:data-touch-fret="(i-1) % 22"
+                            v-bind:data-touch-Pitch="openPitch[ Math.floor((i-1) / 22 + 1) ] + ((i-1) % 22)"
+                            v-bind:data-touch-sound="openSound[ Math.floor((i-1) / 22 + 1) ] + ((i-1) % 22)">
+                            <span v-if="showMode === 'noteName' && positionMsg[i] ">{{ positionMsg[i].noteName }}</span>
+                            <span v-else-if="showMode === 'degreeName' && positionMsg[i] ">{{ positionMsg[i].degreeName }}</span>
+                        </li>
+                    </ul>
+                    <ul id="fret-num-wrap">
+                        <li class="fret-num" v-for="i in 22">{{ i-1 }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <ul id="effects-wrap">
+            <li class="touch-effect" v-for="item in touchEffects" v-bind:key="item.refId" v-bind:style="item.styles">
+            </li>
+        </ul>
+        <transition name="modal-open">
+            <div id="exit-modal" v-show="exitModalShow">
+                <div id="exit-modal-container">
+                    <div id="exit-title">End the Free Play?</div>
+                    <div id="exit-buttons">
+                        <div id="exit-btn" class="btn" v-on:click="backToTop">≫ Yes</div>
+                        <div class="btn" v-on:click="exitModalShow = false">≫ No</div>
+                    </div>
+                </div>
+            </div>
+        </transition>
+        <transition name="loader">
+            <div id="loading" v-show="loaderShow" style="color: white; font-size: 30px; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(10, 0, 30, 0.6); text-align:center; vertical-align: middle; line-height: 100vh;">Loading...</div>
+        </transition>
+    </div>
+    <script src="./script/vue.min.js"></script>
+    <script src="./script/freeplay.js"></script>
+</body>
+
+</html>
